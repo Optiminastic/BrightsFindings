@@ -1,6 +1,8 @@
 // Data layer for the research journal.
-// Single source of truth for posts + categories. Presentation components
-// depend on these types, never the other way around (design-for-change).
+// Single source of truth for locally-authored posts + categories. Presentation
+// components depend on these types, never the other way around (design-for-change).
+// Real published posts from the shared DB are merged in at the content layer
+// (see ./content.ts) — this file holds the journal's editorial archive.
 
 export type Category =
   | "AI & ML"
@@ -34,6 +36,176 @@ export const CATEGORIES: Category[] = [
 ];
 
 const POSTS: Post[] = [
+  {
+    slug: "small-models-big-context",
+    title: "Small Models, Big Context",
+    excerpt:
+      "The frontier is quietly shifting from parameter count to context length. What a model can hold in mind may matter more than how much it knows.",
+    category: "AI & ML",
+    date: "2026-06-24",
+    readingTime: 8,
+    author: "Dr. Priya Nair",
+    authorRole: "Machine Learning",
+    body: [
+      "For two years the headline number was parameters. The quieter revolution has been the context window — the span of text, code, or transcript a model can attend to at once — which has grown from a paragraph to a small library.",
+      "A modest model with a million-token window behaves unlike its specification suggests. It can read an entire codebase, a quarter's worth of correspondence, or a patient's full chart before answering, substituting retrieval-in-context for knowledge baked into weights.",
+      "The trade is real: attention over long sequences is expensive, and most of those tokens are noise. The research frontier is now about which tokens earn their place — learned compression, hierarchical caches, and routing that decides what to keep.",
+      "If the last era asked how much a model could memorize, this one asks how much it can hold in working memory at the moment of decision. The answer is reshaping what 'small' even means.",
+    ],
+  },
+  {
+    slug: "quantum-error-correction-crosses-threshold",
+    title: "Quantum Error Correction Crosses the Threshold",
+    excerpt:
+      "For the first time, adding qubits made a logical qubit better instead of worse. The result is quieter than the hype and more important.",
+    category: "Physics",
+    date: "2026-06-20",
+    readingTime: 9,
+    author: "Dr. Iris Kovač",
+    authorRole: "Quantum Information",
+    body: [
+      "The promise of quantum computing has always carried an asterisk: qubits are fragile, and every additional one introduces more ways to fail. Below a certain quality, error correction makes things worse, not better.",
+      "Recent experiments have, for the first time, crossed that threshold — encoding a logical qubit whose error rate falls as the number of physical qubits grows. The curve finally bends the right way.",
+      "This is not a working quantum computer; it is the proof that one is not forbidden by noise. The engineering road ahead — millions of qubits, exquisite control — remains long.",
+      "But thresholds are the rare milestones that change what is possible in principle. This one quietly moved quantum computing from 'maybe never' to 'merely very hard.'",
+    ],
+  },
+  {
+    slug: "what-the-sleeping-brain-throws-away",
+    title: "What the Sleeping Brain Throws Away",
+    excerpt:
+      "Sleep may be less about rest than about forgetting — the nightly pruning that keeps memory from drowning in its own detail.",
+    category: "Neuroscience",
+    date: "2026-06-18",
+    readingTime: 7,
+    author: "Dr. Marcus Feld",
+    authorRole: "Computational Neuroscience",
+    body: [
+      "We tend to think of sleep as restoration, the brain idling to recharge. The evidence increasingly points elsewhere: sleep is when the brain decides what to keep.",
+      "During slow-wave sleep, synapses that strengthened during the day are systematically scaled back — a global down-selection that preserves the strongest connections and lets the weakest fade.",
+      "The function is counterintuitive but elegant: by forgetting the incidental, the brain makes room for the meaningful, and prevents the runaway strengthening that would otherwise saturate the network.",
+      "If memory is sculpture, sleep is the chisel. What it removes may matter as much as what the waking day laid down.",
+    ],
+  },
+  {
+    slug: "the-grid-is-the-climate-problem",
+    title: "The Grid Is the Climate Problem",
+    excerpt:
+      "We have the clean electrons. We cannot move them. The unglamorous bottleneck of transmission may decide the energy transition.",
+    category: "Climate",
+    date: "2026-06-15",
+    readingTime: 10,
+    author: "Dr. Samuel Brandt",
+    authorRole: "Energy Systems",
+    body: [
+      "The story of clean energy is usually told as a story of generation — cheaper solar, bigger turbines, better batteries. The harder, less photogenic story is transmission: the wires that carry power from where it is made to where it is used.",
+      "Interconnection queues now stretch years, and projects die waiting for grid capacity that does not exist. The constraint is no longer the cost of a clean electron but the impossibility of delivering it.",
+      "Fixes are known and dull: high-voltage lines, dynamic line rating, planning that crosses jurisdictional borders. None of it trends; all of it is decisive.",
+      "Decarbonization will be won or lost in permitting offices and substations, not only in laboratories. The grid is where ambition meets physics — and, more often, paperwork.",
+    ],
+  },
+  {
+    slug: "engineering-the-microbiome-carefully",
+    title: "Engineering the Microbiome, Carefully",
+    excerpt:
+      "The trillions of microbes inside us are a second genome we are only beginning to edit. The early lessons are about restraint.",
+    category: "Biology",
+    date: "2026-06-12",
+    readingTime: 8,
+    author: "Dr. Yuki Tan",
+    authorRole: "Synthetic Biology",
+    body: [
+      "The human microbiome — the dense ecology of bacteria, fungi, and viruses that share our bodies — behaves less like an organ than like a rainforest: interconnected, resilient, and easy to damage by clumsy intervention.",
+      "Early attempts to engineer it, from broad-spectrum probiotics to fecal transplants, worked unpredictably because they treated an ecosystem as a switch. The community resists, reverts, or reorganizes in ways no one intended.",
+      "The more promising approaches are ecological: designing microbes that occupy a specific niche, or nudging the existing community with targeted nutrients rather than wholesale replacement.",
+      "To engineer the microbiome is to garden, not to manufacture. The humbling lesson is that the system we are editing has its own evolutionary agenda.",
+    ],
+  },
+  {
+    slug: "the-alignment-tax-measured",
+    title: "The Alignment Tax, Measured",
+    excerpt:
+      "Safety training was supposed to cost capability. New evaluations suggest the bill is smaller — and stranger — than anyone expected.",
+    category: "AI & ML",
+    date: "2026-06-11",
+    readingTime: 7,
+    author: "Dr. Priya Nair",
+    authorRole: "Machine Learning",
+    body: [
+      "It was long assumed that making a model safer made it duller: every refusal, every hedge, every guardrail shaving a little off raw capability. The 'alignment tax' was treated as an unfortunate but unavoidable cost.",
+      "Careful evaluation complicates the story. On most benchmarks, well-aligned models lose almost nothing; on some they improve, because the same training that teaches restraint also teaches the model to follow instructions precisely.",
+      "Where the tax does appear is narrow and revealing: tasks that reward the very behaviors safety training suppresses — unfiltered speculation, confident extrapolation past the evidence.",
+      "The finding reframes the debate. Alignment is not a uniform drag on intelligence but a redistribution of it, sharpening some faculties while dulling others. The question is whether we are trimming the right ones.",
+    ],
+  },
+  {
+    slug: "causal-inference-comes-of-age",
+    title: "Causal Inference Comes of Age",
+    excerpt:
+      "Correlation has run the data economy for a decade. The tools to ask 'what if' are finally industrial-strength.",
+    category: "Data Science",
+    date: "2026-06-09",
+    readingTime: 8,
+    author: "Dr. Nadia Rahman",
+    authorRole: "Causal Inference",
+    body: [
+      "Most of applied data science answers a narrow question well: given what we have seen, what comes next? The harder, more valuable question — what would happen if we intervened — long lived at the academic margins.",
+      "That is changing. Methods for estimating causal effects from observational data — once fragile and assumption-heavy — have matured into tooling robust enough for production decisions.",
+      "The payoff is decisions, not predictions: which treatment to deploy, which feature actually moves the outcome, which correlation collapses the moment you act on it.",
+      "Causality is harder than prediction and always will be, because it asks about worlds we have not observed. But asking it badly is no longer the only option.",
+    ],
+  },
+  {
+    slug: "reading-the-warning-signs-of-a-tipping-point",
+    title: "Reading the Warning Signs of a Tipping Point",
+    excerpt:
+      "Complex systems often flicker before they flip. The hunt is on for the statistical tremors that precede climate collapse.",
+    category: "Climate",
+    date: "2026-06-05",
+    readingTime: 9,
+    author: "Dr. Ade Okonkwo",
+    authorRole: "Climate Systems",
+    body: [
+      "A tipping point is a quiet catastrophe: a system that absorbs stress for years, then reorganizes abruptly into a new state from which there is no easy return — an ice sheet, a current, a forest.",
+      "Theory predicts these transitions are not entirely silent. As a system approaches its threshold it recovers more slowly from small perturbations, and its fluctuations grow — a signature researchers call critical slowing down.",
+      "Detecting that signature in real climate records is fiendishly hard, buried in noise and short observation windows. But early results in ocean circulation and ice dynamics are unsettlingly consistent with a system under strain.",
+      "An early-warning sign is not a prediction so much as a plea for humility. The value is in the margin it might buy — if we are willing to act on a tremor rather than a rupture.",
+    ],
+  },
+  {
+    slug: "after-the-fold-biologys-prediction-problem",
+    title: "After the Fold: Biology's Prediction Problem Moves On",
+    excerpt:
+      "Structure prediction is largely solved. The field is discovering how much of biology that did, and did not, unlock.",
+    category: "Biology",
+    date: "2026-06-02",
+    readingTime: 7,
+    author: "Dr. Hana Sato",
+    authorRole: "Molecular Biology",
+    body: [
+      "A few years ago, predicting a protein's folded shape from its sequence was a grand challenge. Today it is, for most proteins, a solved problem — one of the cleanest victories machine learning has handed biology.",
+      "The aftermath is instructive. Knowing a structure is not the same as knowing a function, and proteins rarely sit still: they flex, bind, and change shape in ways a single predicted snapshot cannot capture.",
+      "Attention has shifted to the harder questions — interactions, dynamics, and the disordered regions that defy a fixed structure entirely. The map was drawn; now we must learn to read the territory's motion.",
+      "It is a familiar pattern in science: solving the question everyone asked reveals the deeper questions no one knew to.",
+    ],
+  },
+  {
+    slug: "the-reproducibility-dividend",
+    title: "The Reproducibility Dividend",
+    excerpt:
+      "The replication crisis was treated as an embarrassment. Reframed as an investment, it is quietly paying out.",
+    category: "Data Science",
+    date: "2026-05-31",
+    readingTime: 6,
+    author: "Dr. Tomas Reuben",
+    authorRole: "Evaluation & Statistics",
+    body: [
+      "A decade ago, the discovery that many published findings would not replicate landed as a scandal. Whole literatures wobbled; trust in entire fields took a measurable hit.",
+      "What followed was less dramatic and more important: pre-registration, shared data, larger samples, and a culture that treats a single study as a hypothesis rather than a verdict.",
+      "The dividend is now visible. Newer literatures built on these norms replicate at far higher rates, and the cost of the reforms — slower, more deliberate science — looks like a bargain.",
+      "Reproducibility is not bureaucracy; it is the interest paid on honest measurement. The crisis was the price of admission to a more durable kind of knowledge.",
+    ],
+  },
   {
     slug: "scaling-laws-beyond-the-plateau",
     title: "Scaling Laws Beyond the Plateau",
