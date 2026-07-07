@@ -75,11 +75,15 @@ function matchCategory(raw: string): Category | null {
  */
 function isRealDbPost(r: BlogRow): boolean {
   const title = (r.title ?? "").trim();
-  const text = stripHtml(r.content_html ?? "");
   if (!title) return false;
   if (/^test\b/i.test(title)) return false;
   if (/\btest (post|backlink)\b/i.test(title)) return false;
-  return text.length >= 140;
+  // The list endpoint returns summaries WITHOUT content_html; only enforce the
+  // body-length check when a body is actually present (the detail view), so we
+  // never drop a legitimate summary row from listings.
+  const text = stripHtml(r.content_html ?? "");
+  if (text && text.length < 140) return false;
+  return true;
 }
 
 function dbToArticle(r: BlogRow): Article {
