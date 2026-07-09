@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
+import JsonLd from "@/app/components/JsonLd";
 import { GridCard } from "@/app/components/ArticleCard";
 import {
   getArticles,
@@ -11,8 +12,23 @@ import {
   articlesByCategory,
   formatDate,
 } from "@/app/lib/content";
+import type { Article } from "@/app/lib/content";
 
 export const revalidate = 300;
+
+const SITE_URL = "https://brightsfindings.com";
+
+/** A ~155-char plain-text summary for meta descriptions, drawn from the excerpt
+ * or a stripped-HTML fallback so every article has a compelling snippet. */
+function summarize(article: Article): string {
+  const raw =
+    article.excerpt?.trim() ||
+    (article.contentHtml
+      ? article.contentHtml.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()
+      : (article.body ?? []).join(" ").replace(/\s+/g, " ").trim());
+  if (raw.length <= 155) return raw;
+  return raw.slice(0, 152).trimEnd() + "…";
+}
 
 export async function generateStaticParams() {
   const articles = await getArticles();
@@ -26,8 +42,32 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
-  if (!article) return { title: "Not found" };
-  return { title: `${article.title} — First Principles`, description: article.excerpt };
+  if (!article) return { title: "Not found", robots: { index: false } };
+
+  const description = summarize(article);
+  const url = `${SITE_URL}/${slug}`;
+
+  return {
+    title: article.title,
+    description,
+    alternates: { canonical: `/${slug}` },
+    openGraph: {
+      type: "article",
+      title: article.title,
+      description,
+      url,
+      siteName: "Brights Findings",
+      ...(article.date ? { publishedTime: article.date } : {}),
+      authors: [article.author],
+      images: [{ url: article.imageUrl, alt: article.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description,
+      images: [article.imageUrl],
+    },
+  };
 }
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -41,8 +81,28 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     .filter((a) => a.slug !== article.slug)
     .slice(0, 4);
 
+  const url = `${SITE_URL}/${article.slug}`;
+  const blogPostingLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: article.title,
+    description: summarize(article),
+    image: article.imageUrl,
+    ...(article.date
+      ? { datePublished: article.date, dateModified: article.date }
+      : {}),
+    author: { "@type": "Person", name: article.author },
+    publisher: {
+      "@type": "Organization",
+      name: "Brights Findings",
+      logo: { "@type": "ImageObject", url: `${SITE_URL}/icon.svg` },
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+  };
+
   return (
     <>
+      <JsonLd data={blogPostingLd} />
       <Header />
       <main className="flex-1">
         <article className="mx-auto max-w-3xl px-5 pb-16 pt-10 sm:px-8">

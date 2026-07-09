@@ -3,8 +3,7 @@
 
 const FOLDER = "research"; // satellite site key
 
-const API_BASE = process.env.NEXT_PUBLIC_BLOG_API_BASE ?? "https://staging.api.signalor.ai
-";
+const API_BASE = process.env.NEXT_PUBLIC_BLOG_API_BASE ?? "https://staging.api.signalor.ai";
 
 export interface BlogRow {
   id: number;

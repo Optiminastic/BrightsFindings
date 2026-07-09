@@ -40,7 +40,7 @@ export default function Footer() {
 
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-5 py-14 sm:px-8 md:grid-cols-4">
         <div className="col-span-2 md:col-span-1">
-          <span className="font-display text-xl font-bold tracking-tight text-ink">First Principles</span>
+          <span className="font-display text-xl font-bold tracking-tight text-ink">Brights Findings</span>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-ink-soft">
             An independent research journal connecting the dots between disciplines.
           </p>
@@ -80,7 +80,7 @@ export default function Footer() {
 
       <div className="border-t border-line">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-6 text-xs text-ink-faint sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <span>© 2026 First Principles. All rights reserved.</span>
+          <span>© 2026 Brights Findings. All rights reserved.</span>
           <span>Set in Fraunces &amp; Inter.</span>
         </div>
       </div>
