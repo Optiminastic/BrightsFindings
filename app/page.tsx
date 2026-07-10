@@ -48,6 +48,9 @@ export default async function Home() {
       <JsonLd data={organizationLd} />
       <Header />
       <main className="flex-1">
+        <h1 className="sr-only">
+          Brights Findings — In-depth, First-Principles Research &amp; Analysis
+        </h1>
         <Featured articles={all.slice(0, 7)} />
         {CATEGORIES.map((cat) => (
           <CategoryRow

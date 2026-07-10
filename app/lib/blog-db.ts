@@ -15,6 +15,19 @@ export interface BlogRow {
   category: string;
   brand_url: string;
   published_at: string | null;
+  faq: { question: string; answer: string }[];
+}
+
+/** Keep only well-formed FAQ entries — objects with non-empty question + answer. */
+function parseFaq(raw: unknown): { question: string; answer: string }[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const { question, answer } = item as Record<string, unknown>;
+    if (typeof question !== "string" || typeof answer !== "string") return [];
+    if (!question.trim() || !answer.trim()) return [];
+    return [{ question, answer }];
+  });
 }
 
 function normalize(raw: Record<string, unknown>): BlogRow {
@@ -28,6 +41,7 @@ function normalize(raw: Record<string, unknown>): BlogRow {
     category: String(raw.category ?? FOLDER),
     brand_url: String(raw.brand_url ?? ""),
     published_at: (raw.published_at as string) ?? null,
+    faq: parseFaq(raw.faq),
   };
 }
 

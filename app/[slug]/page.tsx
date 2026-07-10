@@ -100,9 +100,29 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
   };
 
+  // Keep the rendered title the ONLY <h1> on the page: demote any <h1> that the
+  // DB body ships to <h2> before it is dangerously injected.
+  const contentHtml = article.contentHtml
+    ? article.contentHtml.replace(/<h1/gi, "<h2").replace(/<\/h1>/gi, "</h2>")
+    : null;
+
+  const faqLd =
+    article.faq.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: article.faq.map((f) => ({
+            "@type": "Question",
+            name: f.question,
+            acceptedAnswer: { "@type": "Answer", text: f.answer },
+          })),
+        }
+      : null;
+
   return (
     <>
       <JsonLd data={blogPostingLd} />
+      {faqLd ? <JsonLd data={faqLd} /> : null}
       <Header />
       <main className="flex-1">
         <article className="mx-auto max-w-3xl px-5 pb-16 pt-10 sm:px-8">
@@ -136,10 +156,10 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           ) : null}
 
           {/* DB posts ship HTML; local archive posts ship ordered paragraphs. */}
-          {article.contentHtml ? (
+          {contentHtml ? (
             <div
               className="mt-10 [&_a]:text-accent [&_a]:underline [&_h2]:font-display [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-ink [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-ink [&_li]:ml-5 [&_li]:list-disc [&_li]:text-ink-soft [&_p]:mt-4 [&_p]:text-lg [&_p]:leading-relaxed [&_p]:text-ink-soft [&_ul]:mt-4"
-              dangerouslySetInnerHTML={{ __html: article.contentHtml }}
+              dangerouslySetInnerHTML={{ __html: contentHtml }}
             />
           ) : (
             <div className="mt-10">
@@ -157,6 +177,26 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               ))}
             </div>
           )}
+
+          {article.faq.length > 0 ? (
+            <section className="mt-14 border-t border-line pt-10">
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">
+                Frequently Asked Questions
+              </h2>
+              <dl className="mt-6">
+                {article.faq.map((f, i) => (
+                  <div key={i} className={i === 0 ? "" : "mt-8"}>
+                    <dt className="font-display text-xl font-semibold text-ink">
+                      {f.question}
+                    </dt>
+                    <dd className="mt-3 text-lg leading-relaxed text-ink-soft">
+                      {f.answer}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          ) : null}
         </article>
 
         {related.length > 0 ? (

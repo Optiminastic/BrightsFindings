@@ -32,6 +32,8 @@ export interface Article {
   /** Ordered paragraphs (local posts). Mutually exclusive with `contentHtml`. */
   body: string[] | null;
   source: "db" | "local";
+  /** Structured FAQ pairs (DB posts). Empty when none were supplied. */
+  faq: { question: string; answer: string }[];
   /**
    * Whether the post belongs in the research journal's editorial surface.
    * Local archive posts are always on-topic; DB posts qualify only when they
@@ -102,6 +104,7 @@ function dbToArticle(r: BlogRow): Article {
     contentHtml: r.content_html,
     body: null,
     source: "db",
+    faq: r.faq,
     onTopic: matched !== null,
   };
 }
@@ -120,6 +123,7 @@ function localToArticle(p: ReturnType<typeof getLocalPosts>[number]): Article {
     contentHtml: null,
     body: p.body,
     source: "local",
+    faq: [],
     onTopic: true,
   };
 }
